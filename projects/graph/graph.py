@@ -13,33 +13,55 @@ class Graph:
         """
         Add a vertex to the graph.
         """
-        pass  # TODO
+        self.vertices[vertex_id] = set()
 
     def add_edge(self, v1, v2):
         """
         Add a directed edge to the graph.
         """
-        pass  # TODO
+        self.vertices[v1].add(v2)
 
     def get_neighbors(self, vertex_id):
         """
         Get all neighbors (edges) of a vertex.
         """
-        pass  # TODO
+        return self.vertices[vertex_id]
 
     def bft(self, starting_vertex):
         """
         Print each vertex in breadth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        q = Queue()
+        q.enqueue(starting_vertex)
+        visited = set()
+        while q.size() > 0:
+            curr = q.dequeue()
+            if curr in visited:
+                continue
+            print(curr)
+            visited.add(curr)
+            for v in self.vertices[curr]:
+                q.enqueue(v)
+
 
     def dft(self, starting_vertex):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        s = Stack()
+        s.push(starting_vertex)
+        visited = set()
+        while s.size() > 0:
+            curr = s.pop()
+            if curr in visited:
+                continue
+            print(curr)
+            visited.add(curr)
+            for v in self.vertices[curr]:
+                s.push(v)
+
 
     def dft_recursive(self, starting_vertex):
         """
@@ -48,7 +70,21 @@ class Graph:
 
         This should be done using recursion.
         """
-        pass  # TODO
+
+        visited = set()
+
+        def helper(v):
+
+            if v in visited:
+                return
+        
+            visited.add(v)
+
+            print(v)
+            for vt in self.vertices[v]:
+                helper(vt)
+
+        return helper(starting_vertex)
 
     def bfs(self, starting_vertex, destination_vertex):
         """
@@ -56,7 +92,22 @@ class Graph:
         starting_vertex to destination_vertex in
         breath-first order.
         """
-        pass  # TODO
+        if starting_vertex == destination_vertex:
+            return [starting_vertex]
+
+        paths = [[starting_vertex]]
+        while True:
+            new_paths = []
+            for path in paths:
+                for v in self.vertices[path[-1]]:
+                    new_path = path + [v]
+                    if v == destination_vertex:
+                        return new_path
+                    new_paths.append(new_path)
+            # no new paths were found, path does not exist
+            if paths == new_paths:
+                return []
+            paths = new_paths
 
     def dfs(self, starting_vertex, destination_vertex):
         """
@@ -64,7 +115,24 @@ class Graph:
         starting_vertex to destination_vertex in
         depth-first order.
         """
-        pass  # TODO
+        if starting_vertex == destination_vertex:
+            return [starting_vertex]
+
+        visited = set([starting_vertex])
+
+        s = Stack()
+        s.push([starting_vertex])
+        while s.size() > 0:
+            curr = s.pop()
+            for v in self.vertices[curr[-1]]:
+                if v in visited:
+                    continue
+                path = curr + [v]
+                if v == destination_vertex:
+                    return path
+                visited.add(v)
+                s.push(path)
+        return []
 
     def dfs_recursive(self, starting_vertex, destination_vertex):
         """
@@ -74,7 +142,22 @@ class Graph:
 
         This should be done using recursion.
         """
-        pass  # TODO
+        visited = set()
+
+        def helper(sv, dv):
+            if sv in visited:
+                return []
+            visited.add(sv)
+            if sv == dv:
+                return [sv]
+            for v in self.vertices[sv]:
+                res = helper(v, dv)
+                if res:
+                    return [sv] + res
+
+        return helper(starting_vertex, destination_vertex)
+
+        
 
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
