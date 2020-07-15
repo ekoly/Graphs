@@ -1,3 +1,6 @@
+import string
+import random
+
 class User:
     def __init__(self, name):
         self.name = name
@@ -42,11 +45,25 @@ class SocialGraph:
         self.last_id = 0
         self.users = {}
         self.friendships = {}
-        # !!!! IMPLEMENT ME
 
-        # Add users
+        def generateName():
+            return [random.choice(string.ascii_uppercase)] + [
+                random.choice(string.ascii_lowercase)
+                for _ in range(random.randint(4, 10))
+            ]
 
-        # Create friendships
+        for _ in range(num_users):
+            self.add_user(generateName())
+
+        num_friendships = avg_friendships * num_users
+        counter = 0
+        while counter < num_friendships//2:
+            potential_friend1 = random.choice(list(self.users.keys()))
+            potential_friend2 = random.choice(list(self.users.keys()))
+            if potential_friend1 != potential_friend2 and potential_friend2 not in self.friendships[potential_friend1]:
+                self.add_friendship(potential_friend1, potential_friend2)
+                counter += 1
+
 
     def get_all_social_paths(self, user_id):
         """
@@ -58,7 +75,21 @@ class SocialGraph:
         The key is the friend's ID and the value is the path.
         """
         visited = {}  # Note that this is a dictionary, not a set
-        # !!!! IMPLEMENT ME
+        frontier = list([user_id, friend_id] for friend_id in self.friendships[user_id])
+
+        visited[user_id] = [user_id]
+
+        while frontier:
+            new_frontier = []
+            for path in frontier:
+                friend_id = path[-1]
+                if friend_id in visited:
+                    continue
+                visited[friend_id] = path
+                for f2 in self.friendships[friend_id]:
+                    new_frontier.append(path + [f2])
+            frontier = new_frontier
+
         return visited
 
 
